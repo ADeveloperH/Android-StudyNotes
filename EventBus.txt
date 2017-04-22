@@ -1,0 +1,138 @@
+EventBus是一个Android端优化的publish/subscribe消息总线。EventBus是一个通用的叫法，例如Google出品的Guava，Guava是一个庞大的库，
+EventBus只是它附带的一个小功能，因此实际项目中使用并不多。用的最多的是greenrobot/EventBus，这个库的优点是接口简洁，集成方便，
+但是限定了方法名，不支持注解。另一个库square/otto修改自 Guava ，用的人也不少。
+
+优点：
+简化了应用程序内各组件间、组件与后台线程间的通信。比如请求网络，等网络返回时通过Handler或Broadcast通知UI，
+两个Fragment之间需要通过Listener通信，这些需求都可以通过EventBus实现。
+
+缺点：目前发现唯一的缺点就是类似之前策略模式一样的诟病，每个事件都必须自定义一个事件类，造成事件类太多，无形中加大了维护成本
+
+ThreadMode 共有四类：
+PostThread：默认的 ThreadMode，表示在执行 Post 操作的线程直接调用订阅者的事件响应方法，不论该线程是否为主线程（UI 线程）。
+			当该线程为主线程时，响应方法中不能有耗时操作，否则有卡主线程的风险。适用场景：对于是否在主线程执行无要求，但若 Post 线程为主线程，不能耗时的操作；
+MainThread：在主线程中执行响应方法。如果发布线程就是主线程，则直接调用订阅者的事件响应方法，否则通过主线程的 Handler 发送消息在
+			主线程中处理——调用订阅者的事件响应函数。显然，MainThread类的方法也不能有耗时操作，以避免卡主线程。适用场景：必须在主线程执行的操作；
+BackgroundThread：在后台线程中执行响应方法。如果发布线程不是主线程，则直接调用订阅者的事件响应函数，否则启动唯一的后台线程去处理。由于后台线程是唯一的，
+			当事件超过一个的时候，它们会被放在队列中依次执行，因此该类响应方法虽然没有PostThread类和MainThread类方法对性能敏感，
+			但最好不要有重度耗时的操作或太频繁的轻度耗时操作，以造成其他操作等待。适用场景：操作轻微耗时且不会过于频繁，即一般的耗时操作都可以放在这里；
+Async：不论发布线程是否为主线程，都使用一个空闲线程来处理。和BackgroundThread不同的是，Async类的所有线程是相互独立的，因此不会出现卡线程的问题。
+			适用场景：长耗时操作，例如网络访问。
+
+
+
+
+
+
+
+
+
+EventBus主要角色:
+Event 传递的事件对象
+Subscriber  事件的订阅者 
+Publisher  事件的发布者
+ThreadMode 定义函数在何种线程中执行
+
+
+使用：
+@Subscribe注解,来确定运行的线程threadMode,是否接受粘性事件sticky以及事件优先级priority,而且方法名不在需要onEvent开头
+@Subscribe(threadMode = ThreadMode.BACKGROUND, sticky = true, priority = 100)
+public void test(String str) {
+}
+
+
+问题：
+1、不支持跨进程（广播支持）
+
+
+
+源码：
+org.greenrobot.eventbus.SubscriberMethodFinder#findUsingReflectionInSingleClass
+1、@Subscribe注解方法必须只有一个参数
+throw new EventBusException("@Subscribe method " + methodName +
+                            "must have exactly 1 parameter but has " + parameterTypes.length);
+2、@Subscribe注解方法修饰符要求
+throw new EventBusException(methodName +
+                        " is a illegal @Subscribe method: must be public, non-static, and non-abstract");
+						
+org.greenrobot.eventbus.SubscriberMethod
+1、eventType：订阅的事件类型。（@Subscribe注解方法的参数类型）
+2、method：@Subscribe注解方法（利用反射可以调用）
+
+org.greenrobot.eventbus.EventBus#subscribe
+1、不能重复注册
+throw new EventBusException("Subscriber " + subscriber.getClass() + " already registered to event "
+                        + eventType);
+
+org.greenrobot.eventbus.EventBusBuilder#eventInheritance
+子事件也可以让响应父事件的 onEvent() 。这个有点绕，举个例子，订阅者的onEvent(CharSequence),如果传一个String类型的值进去，
+默认情况下是不会响应的，但如果我们在构建的时候设置了 eventInheritance 为 true ,那么它就会响应了。
+
+
+注意事项：
+1、一个事件不支持重复注册，否则会报异常。注册一般写在onCreate或者onStart中，尽量不要写在onResume，可能出现多次注册，比如：
+EventBusException: Subscriber class already registered to event class
+2、取消注册一定写在onDestory,写在onStop可能会引发异常；
+3、建议注册前先判断一下是否已经注册，避免重复注册，并且注册尽量放在各变量初始化最后，以免造成空指针异常；（注销是最好也进行判断）
+	if (!EventBus.getDefault().isRegistered(this)) {
+		EventBus.getDefault().register(this);
+	}
+
+	
+	
+
+
+父类订阅:所有订阅消息都会发给父类，子类重写方法解析
+通过Http接口判断。
+
+黏性广播：用于接口内存级别缓存。（但是仅有一次机会）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+引入
+反射：
+Object类中有一个getClass方法，m a r k- t o- w i n：它 会返回一个你的对象所对应的一个Class的对象，
+这个返回来的对象保存着你的原对象的类信息，比如你的原对象的类名叫什么，类里有什么方法，字段等。
+在高级编程当中用的很多，和反射相关。马克-to-win：现在这个阶段还说不清楚，只能先打个比方，反射就像镜子，你觉得生活当中的镜子有用吗？
+区别：
+getDeclaredMethod*()获取的是类自身声明的所有方法，包含public、protected和private方法。
+getMethod*()获取的是类的所有共有方法，这就包括自身的所有public方法，和从基类继承的、从接口实现的所有public方法。
+
+
+
+
+
+枚举特点：
+1、枚举的直接父类是java.lang.Enum，但是不能显示的继承Enum。所有的枚举都继承自java.lang.Enum类。由于Java 不支持多继承，所以枚举对象不能再继承其他类。
+2、枚举就相当于一个类，可以定义构造方法、成员变量、普通方法和抽象方法 
+3、默认私有的构造方法，即使不写访问权限也是private。（假构造器，底层没有无参数的构造器） 
+4、每个实例分别用于一个全局常量表示，枚举类型的对象是固定的，实例个数有限，不能使用new关键字。 
+5、枚举实例必须位于枚举中最开始部分，枚举实例列表的后面要有分号月其他成员相分隔 
+6、枚举实例后有花括号时，该实例是枚举的匿名内部类对象
+枚举单例：
+http://blog.csdn.net/normallife/article/details/51152246
+http://blog.csdn.net/yy254117440/article/details/52305175
+
+构建者模式：
+
+CopyOnWriteArrayList的使用：
+
+Looper：
+

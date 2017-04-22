@@ -1,0 +1,69 @@
+ActivityThread
+	Android程序的入口是 在ActivityThread 的 main 方法中的（当应用程序启动的时候，会通过底层的C/C++去调用main方法）
+	
+	main函数中handler分析：
+		Looper.prepareMainLooper():主线程创建Looper
+		Looper.loop()：开启消息循环 Looper.loop() 里面是一个死循环。之所以用 for (;;) 而不是用 while(true) 
+		是因为防止一些人通过黑科技去修改这个循环的标志（比如通过反射的方式）
+
+	结论：
+	1、在非主线程里面我们也可以搞一个 Handler，但是需要我们主动去为当前的子线程绑定一个 Looper，并且启动消息循环。
+		（主线程中ActivityThread已经替我们创建并开启了）
+	2、Looper 主要有两个核心的方法，一是 prepare，二是开始 loop 循环。通过 Looper、Handler、Message、MessageQueue 等组成了 Android 的消息处理机制，
+		也叫事件、反馈机制。
+
+为什么需要这样一个消息机制？
+	每一个应用程序都有一个主线程，主线程一直循环的话，那么我们的自己的代码就无法执行了。而系统在主线程绑定一个 Looper 循环器以及消息队列，
+	Looper 就像是一个水泵一样不断把消息发送到主线程。如果没有消息机制，我们的代码需要直接与主线程进行访问，操作，切换，访问主线程的变量等等，
+	这样做会带来不安全的问题，另外APP的开发的难度也会提高，同时也不利于整个 Android 系统的运作。有了消息机制，我们可以简单地通过发送消息，
+	然后 Looper 把消息发送到主线程，然后就可以执行了。
+
+Handler分类：
+	1、系统的操作消息（系统 Handler）：比如启动 Activity 等四大组件（例如突然来电话的时候跳转到电话界面）
+	2、我们自己的操作消息（客户端的 Handler）
+
+系统的Handler：android.app.ActivityThread.H
+	描述：ActivityThread 的成员变量里面有一个这样的 大H（继承Handler），这个就是系统的Handler：final H mH = new H();。
+	创建：ActivityThread 的 main 方法，在 new ActivityThread 的时候，系统的 Handler 就就初始化了，这是一种饿加载的方法，
+			也就是在类被 new 的时候就初始化成员变量sMainThreadHandler。
+	结论：
+	1、从系统的 Handler 中，在 handleMessage 我们可以看到很多关于四大组件的生命周期操作，比如创建、销毁、切换、跨进程通信，
+		也包括了整个Application进程的销毁等等。
+		
+
+		
+		
+消息的发送：android.os.Handler
+	消息的发送有这一系列方法，甚至我们的一系列post方法（封装了带Runnable的Message），最终都是调用sendMessageAtTime方法，把消息放到消息队列里面。
+	
+消息入队核心代码：android.os.MessageQueue#enqueueMessage
+	消息并不是一直在队列的尾部添加的，而是可以指定时间，如果是立马需要执行的消息，就会插到队列的头部，就会立马处理，如此类推。
+	
+消息出队核心代码：android.os.MessageQueue#next
+	从MessageQueue的next方法知道，next是考虑消息的时间when变量的MessageQueue的进入队列的方法如下，核心思想就是时间比较小的（越是需要马上执行的消息）
+	就越防到越靠近头指针的位置。next方法并不是直接从头部取出来的，而是会去遍历所有消息，根据时间戳参数等信息来取消息的。
+
+线程与Looper的绑定：android.os.Looper#prepare()
+	线程里面默认情况下是没有 Looper 循环器的，因此我们需要调用 prepare方法 来关联线程和 Looper。Looper 与线程的关联是通过 ThreadLocal 来进行的，
+	（详见Looper讲解）
+	
+Handler、Looper是怎么关联起来的呢？
+	android.os.Handler#Handler(android.os.Handler.Callback, boolean)。最终的构造方法，在构造Handler的时候，是通过Looper的静态方法myLooper()
+	去拿到一个Looper对象的。这里就是通过ThreadLocal的get方法去拿到当前线程的Looper，因此Handler就跟线程绑定在一起了。
+	一般们是在Activity里面使用Handler的，而Activity的生命周期是在主线程回调的，因此我们一般使用的Handler是跟主线程绑定在一起的。
+	Handler（Looper）在哪个线程创建的，就在哪个线程回调，在子线程中创建就在子线程中执行，这时就是不能更新UI的。
+
+
+		
+应用程序的退出过程（引申）
+	实际上我们要退出应用程序的话，就是让主线程结束，换句话说就是要让 Looper 的循环结束。这里是直接结束 Looper 循环，
+	因此我们四大组件的生命周期方法可能就不会执行了，因为四大组件的生命周期方法就是通过 Handler 去处理的，Looper 循环都没有了，四大组件还玩毛线！
+	因此我们平常写程序的时候就要注意了，onDestroy 方法是不一定能够回调的。
+	1、大H源码中SUICIDE：Process.killProcess(Process.myPid());自杀来退出应用程序
+	2、大H源码中EXIT_APPLICATION：Looper.myLooper().quit();
+	
+	
+
+
+
+

@@ -1,0 +1,32 @@
+
+
+引申的知识点：
+Handler
+	1、程序入口的源码ActivityThread可以分析四大组件的生命周期的等具体的实现过程
+	2、程序入口的源码ActivityThread可以分析应用程序的的退出
+	
+Android中子线程真的不能更新UI吗？
+	参考资料：
+	http://www.cnblogs.com/xuyinhuan/p/5930287.html
+	http://www.jianshu.com/p/ed1af0c6aee2
+区别： 
+	new Thread(new Runnable() {
+				@Override
+				public void run() {
+				   
+				}
+			}).start();
+	
+	 new Thread() {
+				@Override
+				public void run() {
+
+				}
+			}.start();
+			
+Android中为什么主线程不会因为Looper.loop()里的死循环卡死？ 
+	https://www.zhihu.com/question/34652589/answer/59578531
+	http://blog.csdn.net/tiandiren2007/article/details/50867589
+
+Android 16ms：
+http://www.jianshu.com/p/02800806356c

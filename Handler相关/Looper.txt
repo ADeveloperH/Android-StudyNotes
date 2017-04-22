@@ -1,0 +1,66 @@
+1、Looper类别用来为一个线程开启一个消息循环。默认情况下Android中新诞生的线程是没有开启消息循环的。
+	主线程除外，主线程系统会自动为其创建Looper对象，开启消息循环）。Looper对象通过MessageQueue来存放消息和事件。一个线程只能有一个Looper，对应一个MessageQueue。
+2、通常是通过Handler对象来与Looper交互的。Handler可看做是Looper的一个接口，用来向指定的Looper发送消息及定义处理方法。
+	默认情况下Handler会与其被定义时所在线程的Looper绑定，比如，在主线程中定义，其是与主线程的Looper绑定。mainHandler = new Handler() 
+	等价于new Handler（Looper.myLooper()）.Looper.myLooper()：Return the Looper object associated with the current thread 获取当前进程的looper对象。
+	还有一个类似的 Looper.getMainLooper() 用于获取主线程的Looper对象。
+3、在非主线程中直接new Handler() 会报如下的错误:
+	E/AndroidRuntime( 6173): Uncaught handler: thread Thread-8 exiting due to uncaught exception
+	E/AndroidRuntime( 6173): java.lang.RuntimeException: Can't create handler inside thread that has not called Looper.prepare()
+	原因是非主线程中默认没有创建Looper对象，需要先调用Looper.prepare()启用Looper。
+4、 Looper.loop(); 让Looper开始工作，从消息队列里取消息，处理消息。
+	注意：写在Looper.loop()之后的代码不会被执行，这个函数内部应该是一个循环，当调用mHandler.getLooper().quit()后，loop才会中止，其后的代码才能得以运行。
+	
+源码分析：
+	消息的循环：android.os.Looper#loop：
+	1、首先拿到 Looper 对象（me），如果当前的线程没有 Looper，那么就会抛出异常，这就是为什么在子线程里面创建Handler如果不手动创建和启动 Looper 会报错的原因。
+	2、然后拿到 Looper 的成员变量 MessageQueue，在 MessageQueue 里面不断地去取消息，关于 MessageQueue 的 next方法 如下：
+		这里可以看到消息的取出用到了一些native方法，这样做是为了获得更高的效率，消息的去取出并不是直接就从队列的头部取出的，
+		而是根据了消息的when时间参数有关的，因为我们可以发送延时消息、也可以发送一个指定时间点的消息。因此这个函数有点复杂
+	3、如果已经没有消息了，那么就可以退出循环，那么整个应用程序就退出了。系统Handler 收到 EXIT_APPLICATION 消息的时候，就会调用 Looper 的 quit方法。
+	4、msg.target.dispatchMessage(msg)就是处理消息，这里就会调用Handler的dispatchMessage方法：
+		在这个方法里面会先去判断 Message 的 callback 是否为空，这个 callback 是在 Message类 里面定义的：Runnable callback;
+		这是一个 Runnable对象，handleCallback方法里面做的事情就是拿到这个 Runnable 对象，然后在 Handler 所创建的线程（例如主线程）执行run方法：
+		Handler（Looper）在哪个线程创建的，就在哪个线程回调，在子线程中创建就在子线程中执行，这时就是不能更新UI的。
+	5、最后是回收消息：msg.recycleUnchecked()。所以说：我们平时在处理完handleMessage之后并不需要我们程序员手动去进行回收，系统已经帮我们做了这一步操作了。
+	
+线程与Looper的绑定：android.os.Looper#prepare()
+	线程里面默认情况下是没有 Looper 循环器的，因此我们需要调用 prepare方法 来关联线程和 Looper。Looper 与线程的关联是通过 ThreadLocal 来进行的，
+	ThreadLocal 是JDK提供的一个解决线程不安全的类，线程不安全问题归根结底主要涉及到变量的多线程访问问题，例如变量的临界问题、值错误、并发问题等。
+	这里利用ThreadLocal 绑定了 Looper 以及线程，就可以避免其他线程去访问当前线程的 Looper 了。ThreadLocal 通过 get 以及 set方法 就可以绑定线程和 Looper 了，
+	这里只需要传入 Value 即可，因为线程是可以通过 Thread.currentThread() 去拿到的。
+	
+	为什么可以绑定线程了呢？
+		map.set(this, value) 通过把自身（ThreadLocal以及值（Looper）放到了一个Map里面，如果再放一个的话，就会覆盖，因为map不允许键值对中的键是重复的）
+		因此ThreadLocal绑定了线程以及Looper。因为这里实际上把变量（这里是指Looper）放到了Thread一个成员变量Map里面
+		。ThreadLocal的getMap方法实际上是拿到线程的MAP，底层是通过数组（实际上数据结构是一种散列列表）实现的，具体的实现就点到为止了。
+		如果android系统主线程Looper可以随随便便被其他线程访问到的话就会很麻烦了，啊哈哈，你懂的。
+	Handler、Looper是怎么关联起来的呢？
+	（具体查看Handler讲解）
+		
+Android中为什么主线程不会因为Looper.loop()里的死循环卡死？ 
+1、为什么要死循环：对于线程既然是一段可执行的代码，当可执行代码执行完成后，线程生命周期便该终止了，线程退出。
+	而对于主线程，我们是绝不希望会被运行一段时间，自己就退出，那么如何保证能一直存活呢？简单做法就是可执行代码是能一直执行下去的，
+	死循环便能保证不会被退出，例如，binder线程也是采用死循环的方法，但不是简单地死循环。但这里可能又引发了另一个问题，既然是死循环又如何去处理其他事务呢？
+	通过创建新线程的方式。真正会卡死主线程的操作是在回调方法onCreate/onStart/onResume等操作时间过长，会导致掉帧，甚至发生ANR，looper.loop本身不会导致应用卡死。
+	在代码ActivityThread.main()中会在进入死循环之前便创建了新binder线程，thread.attach(false)；便会创建一个BInder线程，具体过程，
+	可查看 startService流程分析，这里不展开说，简单说Binder用于进程间通信，采用C/S架构。关于binder感兴趣的朋友，可查看我回答的另一个知乎问题：
+	参考：
+	https://www.zhihu.com/question/34652589/answer/59578531
+	http://blog.csdn.net/tiandiren2007/article/details/50867589
+
+
+	
+Toast或者Dialog中都有一个Handler的成员变量，在初始化时都会跟着初始化，而Toast或者Dialog中的Handler都需要一个Looper，
+所以需要在包含该Toast或者Dialog的线程中(如下面的Timer线程)初始化Looper。Looper.prepare()；
+
+
+Android程序入口：
+android.app.ActivityThread#main
+
+
+Handler依赖于Looper
+Looper：成员变量MessageQueue，消息队列
+Message：消息池。
+
+

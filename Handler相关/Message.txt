@@ -1,0 +1,17 @@
+Message ：
+	描述：在 MessageQueue 里面存在的就是我们的 Message对象：
+	Message 对象是实现了 Parcelable 接口的，因为 Message 消息可能需要跨进程通信，这时候就需要进程序列化以及反序列化操作了。
+	Message 里面有一些我们常见的参数，arg1 arg2 obj callback when 等等。其中 target 对象就是发送这个消息的 Handler对象，
+			最终这条消息也是通过这个 Handler 去处理掉的。
+			
+Message Pool消息池的概念：重复利用Message
+	源码实现：android.os.Message#obtain()
+			我们通过obtain方法取出一条消息的时候，如果发现当前的消息池不为空，那就直接重复利用Message（已经被创建过和handle过的）；如果为空就重新 new 一个消息。
+			这就是一种享元设计模式的概念。例如在游戏里面，发子弹，如果一个子弹是一个对象，一按下按键就发很多个子弹，那么这时候就需要利用享元模式去循环利用了。
+			这个消息池是通过链表的实现的，通过上面的代码可以知道，sPool永远指向这个消息池的头，取消息的时候，先拿到当前的头sPool，然后使得sPool指向下一个结点，
+			最后返回刚刚取出来的结点。我们平常编程的时候就要养成好的习惯，循环利用
+
+消息的回收机制：android.os.Message#recycle
+	源码分析：recycleUnchecked 中拿到消息池，清空当前的消息，next 指向当前的头指针，头指针指向当前的 Message对象，也就是在消息池头部插入当前的消息。
+			关于消息的回收还有一点需要注意的就是，我们平时写 Handler 的时候不需要我们手动回收，因为谷歌的工程师已经有考虑到这方面的问题了。
+			消息是在 Handler 分发处理之后就会被自动回收的。（android.os.Looper#loop中调用msg.recycleUnchecked();）

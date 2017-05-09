@@ -6,6 +6,11 @@ Handler
 	2、程序入口的源码ActivityThread可以分析应用程序的的退出
 	
 Android中子线程真的不能更新UI吗？
+	（me）一个原则：Android只允许在主线程更新UI。handler在哪个线程创建就在哪个线程执行
+	异常是从android.view.ViewRootImpl的checkThread方法抛出
+	ViewRootImpl的创建在onResume方法回调之后，而我们一开篇是在onCreate方法中创建了子线程并访问UI，
+	在那个时刻，ViewRootImpl是没有创建的，无法检测当前线程是否是UI线程，所以程序没有崩溃一样能跑起来，而之后修改了程序，
+	让线程休眠了200毫秒后，程序就崩了。很明显200毫秒后ViewRootImpl已经创建了，可以执行checkThread方法检查当前线程。
 	参考资料：
 	http://www.cnblogs.com/xuyinhuan/p/5930287.html
 	http://www.jianshu.com/p/ed1af0c6aee2

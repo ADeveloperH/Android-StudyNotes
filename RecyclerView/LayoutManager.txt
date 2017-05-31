@@ -1,0 +1,17 @@
+系统提供了3个实现类：
+LinearLayoutManager 现行管理器，支持横向、纵向。
+GridLayoutManager 网格布局管理器
+StaggeredGridLayoutManager 瀑布就式布局管理器
+
+
+
+引入：
+1、Drawable 相关：
+http://blog.csdn.net/lmj623565791/article/details/43752383
+Drawable.setBounds(left, top, right, bottom);指定一个矩形区域，然后通过draw(Canvas)画的时候，就只在这个矩形区域内画图
+Drawable.draw(canvas); 把 drawable 内容画到画布中  
+Drawable.getIntrinsicHeight();//返回图片固有的高度
+Drawable.getIntrinsicWidth();//返回图片固有的宽度
+2、shape中gradient
+http://blog.csdn.net/zjdyhant/article/details/46537647
+         

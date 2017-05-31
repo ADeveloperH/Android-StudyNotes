@@ -1,0 +1,42 @@
+addItemDecoration()方法添加decoration
+onDraw：方法先于drawChildren
+onDrawOver：在drawChildren之后，一般我们选择复写其中一个即可。
+getItemOffsets：可以通过outRect.set()为每个Item设置一定的偏移量，主要用于绘制Decorator。
+
+
+（0，0,1440,2280-0）
+
+引入：
+1、clipChildren 和 clipToPadding
+	clipChild 用于定义子控件是否在父控件边界内进行绘制。clipChild 默认为 true。也就是不允许进行扩展绘制。
+	clipToPadding 用来定义 ViewGroup 是否允许在 padding 中绘制。默认情况下，cliptopadding 被设置为 ture，也就是 padding 部分是不允许绘制的。
+	两者都是 ViewGroup 才具有的属性 
+2、绘图相关：http://blog.csdn.net/harvic880925/article/details/39080931
+	裁剪画布是利用Clip系列函数，通过与Rect、Path、Region取交、并、差等集合运算来获得最新的画布形状。
+	除了调用Save、Restore函数以外，这个操作是不可逆的，一但Canvas画布被裁剪，就不能再被恢复！
+	Clip系列函数如下：
+	boolean	clipPath(Path path)
+	boolean	clipPath(Path path, Region.Op op)
+	boolean	clipRect(Rect rect, Region.Op op)
+	boolean	clipRect(RectF rect, Region.Op op)
+	boolean	clipRect(int left, int top, int right, int bottom)
+	boolean	clipRect(float left, float top, float right, float bottom)
+	boolean	clipRect(RectF rect)
+	boolean	clipRect(float left, float top, float right, float bottom, Region.Op op)
+	boolean	clipRect(Rect rect)
+	boolean	clipRegion(Region region)
+	boolean	clipRegion(Region region, Region.Op op)
+	
+	所有对画布的操作都是不可逆的，这会造成很多麻烦，比如，我们为了实现一些效果不得不对画布进行操作，但操作完了，画布状态也改变了，
+	这会严重影响到后面的画图操作。如果我们能对画布的大小和状态（旋转角度、扭曲等）进行实时保存和恢复就最好了。
+	画布的保存与恢复相关的函数——Save（）、Restore（）。
+	int save ()
+	void restore()
+	这两个函数没有任何的参数，很简单。
+	Save（）：每次调用Save（）函数，都会把当前的画布的状态进行保存，然后放入特定的栈中；
+	restore（）：每当调用Restore（）函数，就会把栈中最顶层的画布状态取出来，并按照这个状态恢复当前的画布，并在这个画布上做画。
+	
+	
+	
+	
+	

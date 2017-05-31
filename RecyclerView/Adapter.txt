@@ -1,0 +1,5 @@
+调用顺序：
+1、getItemCount：会多次不断调用。滑动过程中也会
+2、onCreateViewHolder：每次向下滑动调用，往回滑动不调用。
+3、onBindViewHolder：先调用到一屏加1显示的position。每次向下滑动会position加1。往回滑动不会调用
+

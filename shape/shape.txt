@@ -1,0 +1,96 @@
+http://www.cnblogs.com/MianActivity/p/5867776.html
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape=["rectangle" | "oval" | "line" | "ring"] >
+    <corners
+        android:radius="integer"
+        android:topLeftRadius="integer"
+        android:topRightRadius="integer"
+        android:bottomLeftRadius="integer"
+        android:bottomRightRadius="integer" />
+    <gradient
+        android:angle="integer"
+        android:centerX="integer"
+        android:centerY="integer"
+        android:centerColor="integer"
+        android:endColor="color"
+        android:gradientRadius="integer"
+        android:startColor="color"
+        android:type=["linear" | "radial" | "sweep"]
+        android:useLevel=["true" | "false"] />
+    <padding
+        android:left="integer"
+        android:top="integer"
+        android:right="integer"
+        android:bottom="integer" />
+    <size
+        android:width="integer"
+        android:height="integer" />
+    <solid
+        android:color="color" />
+    <stroke
+        android:width="integer"
+        android:color="color"
+        android:dashWidth="integer"
+        android:dashGap="integer" />
+</shape>
+
+
+1、<shape>标签属性
+
+	android:shape=["rectangle" | "oval" | "line" | "ring"]  
+	shape的形状，默认为矩形，可以设置为矩形（rectangle）、椭圆形(oval)、线性形状(line)、环形(ring)
+	
+	下面的属性只有在android:shape="ring时可用：  
+	android:innerRadius         尺寸，内环的半径。  
+	android:innerRadiusRatio    浮点型，以环的宽度比率来表示内环的半径，例如，如果android:innerRadiusRatio，表示内环半径等于环的宽度除以5，这个值是可以被覆盖的，默认为9.  
+	android:thickness           尺寸，环的厚度  
+	android:thicknessRatio      浮点型，以环的宽度比率来表示环的厚度，例如，如果android:thicknessRatio="2"，那么环的厚度就等于环的宽度除以2。这个值是可以被android:thickness覆盖的，默认值是3  
+	android:useLevel            boolean值，如果当做是LevelListDrawable使用时值为true，否则为false. （这里一定要要加上useLevel属性并定义为false，不然没有效果）
+2、<corners    //定义圆角  
+    android:radius="dimension"      //全部的圆角半径  
+    android:topLeftRadius="dimension"   //左上角的圆角半径  
+    android:topRightRadius="dimension"  //右上角的圆角半径  
+    android:bottomLeftRadius="dimension"    //左下角的圆角半径  
+    android:bottomRightRadius="dimension" />    //右下角的圆角半径  
+	corners标签是用来字义圆角的，其中radius与其它四个并不能共同使用。
+3、<solid  android:color="color" />  solid用以指定内部填充色
+
+4、gradient用以定义渐变色，可以定义两色渐变和三色渐变，及渐变样式，它的属性有下面几个：
+	<gradient 
+		android:type=["linear" | "radial" | "sweep"]    //共有3中渐变类型，线性渐变（默认）/放射渐变/扫描式渐变  linear（线性渐变）、radial（放射性渐变）、sweep（扫描式渐变）
+		android:angle="integer"     //渐变角度，必须为45的倍数，0为从左到右（逆时针。仅对线性渐变有效）
+		android:centerX="float"     //渐变中心X的相当位置，范围为0～1。仅当渐变类型为放射渐变时有效，类型为分数或小数，不接受Dimension。默认值是0.5，有效值是0.0~1.0，超出该范围后会看不出渐变效果。centerX、centerY的取值其实是宽和高的百分比
+		android:centerY="float"     //渐变中心Y的相当位置，范围为0～1。仅当渐变类型为放射渐变时有效，类型为分数或小数，不接受Dimension。默认值是0.5，有效值是0.0~1.0，超出该范围后会看不出渐变效果。centerX、centerY的取值其实是宽和高的百分比
+		android:startColor="color"   //渐变开始点的颜色  
+		android:centerColor="color"  //渐变中间点的颜色，在开始与结束点之间  
+		android:endColor="color"    //渐变结束点的颜色  
+		android:gradientRadius="float"  //渐变的半径，只有当渐变类型为radial时才能使用  
+		android:useLevel=["true" | "false"] />  //使用LevelListDrawable时就要设置为true。设为false时才有渐变效果 。useLevel属性通常不使用。该属性用于指定是否将该shape当成一个LevelListDrawable来使用，默认值为false。
+		
+5、stroke描边属性，可以定义描边的宽度，颜色，虚实线等
+	<stroke        
+		android:width="dimension"   //描边的宽度（描边的厚度即高度。竖直方向）   
+		android:color="color"   //描边的颜色   
+		// 以下两个属性设置虚线   
+		android:dashWidth="dimension"   //虚线的宽度（水平方向），值为0时是实线   
+		android:dashGap="dimension" />  //虚线的间隔  
+6、size和padding这两个基本上不怎么用，因为他们所具有的功能，控件本身也能实现。 
+	size:是用来定义图形的大小的
+	<size  
+		android:width="dimension"  
+		android:height="dimension" />
+	padding：用来定义内部边距
+	<padding   
+		android:left="dimension"  
+		android:top="dimension"  
+		android:right="dimension"  
+		android:bottom="dimension" />
+
+
+
+
+
+	
+	

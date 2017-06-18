@@ -1,0 +1,38 @@
+Glide对比Picasso
+http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0327/2650.html
+
+Glide详解
+http://blog.csdn.net/guolin_blog/article/details/53759439
+
+注意：
+1、Glide不能直接设置setTag
+	解决方案：http://blog.csdn.net/qq_35717877/article/details/53886687
+
+
+缓存：
+	在缓存这一功能上，Glide又将它分成了两个模块，一个是内存缓存，一个是硬盘缓存。这两个缓存模块的作用各不相同，
+	内存缓存的主要作用是防止应用重复将图片数据读取到内存当中，而硬盘缓存的主要作用是防止应用重复从网络或其他地方重复下载和读取数据。
+	Glide自动就是开启内存缓存的。Glide内存缓存的实现自然也是使用的LruCache算法
+	
+禁用内存缓存：
+Glide.with(this)
+     .load(url)
+     .skipMemoryCache(true)
+     .into(imageView);
+
+禁止Glide对图片进行硬盘缓存：
+Glide.with(this)
+     .load(url)
+     .diskCacheStrategy(DiskCacheStrategy.NONE)
+     .into(imageView);
+DiskCacheStrategy.NONE： 表示不缓存任何内容。
+DiskCacheStrategy.SOURCE： 表示只缓存原始图片。
+DiskCacheStrategy.RESULT： 表示只缓存转换过后的图片（默认选项）。
+DiskCacheStrategy.ALL ： 表示既缓存原始图片，也缓存转换过后的图片。
+
+
+封装引入思考：
+1、策略模式（可以考虑缓存与否的策略模式等）
+2、封装时如果使用标志位作为参数，要使用自己定义的，不能使用第三方的，否则替换的时候还得修改参数类型
+3、glide加载https图片
+4、glide加载缩略图的意义

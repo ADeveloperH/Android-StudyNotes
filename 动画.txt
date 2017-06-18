@@ -1,9 +1,0 @@
-ViewTreeObserver简介
-http://www.cnblogs.com/xingfuzzhd/p/3154674.html
-
-
-Android 属性动画（Property Animation） 完全解析 （下）
-http://blog.csdn.net/lmj623565791/article/details/38092093
-
-Android 开源动画框架：NineOldAndroids
-https://github.com/JakeWharton/NineOldAndroids

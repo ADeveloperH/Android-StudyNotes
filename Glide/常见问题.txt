@@ -1,0 +1,4 @@
+1、You cannot start a load for a destroyed activity
+	解决方案：可以使用applicationcontext（也不会导致内存泄露）
+	https://stackoverflow.com/questions/31964737/glide-image-loading-with-application-context/32887693#32887693
+	https://github.com/bumptech/glide/issues/975

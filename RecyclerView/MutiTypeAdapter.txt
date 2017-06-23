@@ -1,0 +1,63 @@
+源码：https://github.com/drakeet/MultiType
+WIKI：https://github.com/drakeet/MultiType/wiki/Android-MultiType-3.0
+
+分析
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+引入：
+1、java泛型的使用
+2、Class.isAssignableFrom(Class clz)方法 与 instanceof 关键字的区别
+	http://sunnylocus.iteye.com/blog/555676
+3、删除集合元素的新思路
+	List<Class<?>> classes;
+	Class<?> clazz;
+	while (true) {
+            int index = classes.indexOf(clazz);
+            if (index != -1) {
+                classes.remove(index);
+               } else {
+                break;
+            }
+        }
+		
+
+泛型的使用：
+	参考链接：
+	http://peiquan.blog.51cto.com/7518552/1302898
+	https://segmentfault.com/a/1190000002646193
+	https://my.oschina.net/jiemachina/blog/201507
+	https://www.ziwenxie.site/2017/03/01/java-generic/
+
+	1、注意第一个为正确，第二个会报错
+		public <T> void fromArrayToCollection(T[] a, Collection<T> c){  
+				for(T t : a){  
+					c.add(t);  
+				}  
+			}  
+		相当于为该方法声明了一个类型为T的类，这个方法放到任意一个类中都不会报错的。  
+		public void fromArrayToCollection(T[] a, Collection<T> c){  
+				for(T t : a){  
+					c.add(t);  
+				}  
+			}
+		相当于没有声明类型为T的类，这时必须在类上面加上泛型T，不然这个方法会报错的。
+		
+		泛型的声明，必须在方法的修饰符（public,static,final,abstract等）之后，返回值声明之前
+		
+对象排序方法collection：
+	http://peiquan.blog.51cto.com/7518552/1293970

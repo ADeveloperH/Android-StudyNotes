@@ -1,1 +1,26 @@
-二&三：key、pwd放在Gradle properties中
+gradle和groovy
+http://www.jianshu.com/p/7b31cc80421d
+
+groovy语法（可使用在线编辑器）
+https://www.ibm.com/developerworks/cn/education/java/j-groovy/j-groovy.html（文档比较老）
+
+
+gradle-plugin中文使用文档：
+https://dongchuan.gitbooks.io/gradle-user-guide-/introduction.html（https://github.com/DONGChuan/GradleUserGuide）
+http://avatarqing.github.io/Gradle-Plugin-User-Guide-Chinese-Verision/basic_project/simple_build_files.html（没有上个好）
+
+gradle常用知识：
+https://juejin.im/post/58eae7e5a22b9d0058a88a56（非常全面。墙）
+http://www.jianshu.com/p/ed4ef3b96a29（同上。未墙）
+
+
+命令打包：（查找常见命令）
+Gradlew命令实际上就是执行的gradle-wrapper.properties中最后一行指定的路径下的环境变量地址； 
+否则不同的项目可能有不同的环境变量路径，如果使用gradle命令则需要频繁的修改系统环境变量地址； 
+而gradlew命令表示当前项目下的环境变量地址。 
+
+任务：
+1、key、pwd放在Gradle properties中
+2、创建不同的applicationId和应用名称.同时按照两个包(debug和release)
+3、改变应用名称（app_name）http://blog.csdn.net/sodino/article/details/52402376
+

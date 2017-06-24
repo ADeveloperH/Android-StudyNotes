@@ -1,0 +1,15 @@
+https://github.com/greenrobot/greenDAO（GitHub）
+http://greenrobot.org/greendao/documentation/sessions/（官网文档）
+http://www.jianshu.com/p/5449656d56d2（推荐）
+http://www.jianshu.com/p/d61983df2341（推荐）
+
+
+http://chuansong.me/n/1864477051513
+http://blog.csdn.net/ys743276112/article/details/50479917
+https://juejin.im/entry/58abb5b4ac502e006978acc8
+
+
+引入：
+1、调试工具Stetho
+http://www.jianshu.com/p/03da9f91f41f
+http://www.tuicool.com/articles/ZF32InE

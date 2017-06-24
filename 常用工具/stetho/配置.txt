@@ -1,0 +1,14 @@
+debugCompile "com.facebook.stetho:stetho:1.4.1"
+debugCompile "com.facebook.stetho:stetho-okhttp3:1.4.1"
+debugCompile "com.facebook.stetho:stetho-js-rhino:1.4.1"
+
+application
+if (BuildConfig.DEBUG) {
+            com.facebook.stetho.Stetho.initializeWithDefaults(this);
+        }
+	
+	
+	
+	
+	
+	

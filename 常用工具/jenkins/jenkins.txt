@@ -1,0 +1,23 @@
+参考链接：
+https://www.mobibrw.com/2016/3695
+http://www.jianshu.com/p/38b2e17ced73
+http://ownwell.github.io/2015/08/16/jenkins-CI-android/
+https://juejin.im/entry/585a6b6bb123db006597195a
+
+
+选择分支
+http://blog.csdn.net/u012076316/article/details/52056107
+
+jenkins使用fir
+http://blog.fir.im/jenkins/
+
+
+
+jenkins初始密码存放在：
+C:\Users\Administrator\.jenkins\secrets\initialAdminPassword
+
+
+常见问题：
+1、Could not load Logmanager "org.apache.juli.ClassLoaderLogManager" 
+	java.lang.ClassNotFoundException: org.apache.juli.ClassLoaderLogManager
+	http://markjoker.iteye.com/blog/2246177

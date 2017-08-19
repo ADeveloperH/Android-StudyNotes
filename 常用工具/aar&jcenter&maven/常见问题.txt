@@ -1,0 +1,5 @@
+1、将library打包成aar后。如果library依赖其他的远程库。会出现java.lang.NoClassDefFoundError。library不会将依赖的远程库也打进aar中。
+	解决方案：https://stackoverflow.com/questions/25698160/can-an-aar-include-transitive-dependencies
+	依赖时compile ('com.imageloaderutil:imageloader:1.0.0@aar'){
+        transitive=true
+    }

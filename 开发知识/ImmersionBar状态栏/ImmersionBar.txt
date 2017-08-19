@@ -1,0 +1,13 @@
+项目地址：https://github.com/laobie/StatusBarUtil
+博客地址：http://www.jianshu.com/p/2a884e211a62
+
+版本支持：>=4.4
+
+
+1、Window、PhoneWindow、DecorView和android.R.id.content
+http://www.jianshu.com/p/afa921d8ed24
+https://gxnotes.com/article/52529.html
+2、接口Cloneable
+http://blog.csdn.net/kenthong/article/details/5758884
+浅克隆和深克隆：http://www.jianshu.com/p/c976b23ad562
+

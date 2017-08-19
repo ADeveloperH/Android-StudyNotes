@@ -1,0 +1,7 @@
+okhttp源码解析：http://www.jianshu.com/p/23b8aa490a6b
+
+手动加入缓存：http://www.jianshu.com/p/7aa8f3443e05
+DiskLruCache完全解析，硬盘缓存的最佳方案：http://blog.csdn.net/guolin_blog/article/details/28863651
+
+
+项目中使用RSA加密后每次请求相同接口url不一样。会多次缓存

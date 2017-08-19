@@ -1,0 +1,11 @@
+
+原理：
+http://www.jianshu.com/p/54dd21c50f21
+
+教程：
+http://mouxuejie.com/blog/2017-03-19/capture-package-principle/
+http://www.jianshu.com/p/99b6b4cd273c
+
+https解密失败：
+http://blog.summerpro.cn/myblog/?p=232
+配置图片见文件夹

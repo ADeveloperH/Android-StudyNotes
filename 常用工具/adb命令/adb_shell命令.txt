@@ -1,0 +1,13 @@
+adb命令：
+显示当前运行的全部模拟器：adb devices
+安装应用程序：adb install -r 应用程序.apk
+
+
+
+
+
+shell命令：
+	进入：adb shell
+	离开shell:exit
+shell模式下命令：
+dumpsys activity activities

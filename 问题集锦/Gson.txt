@@ -1,0 +1,6 @@
+1、问题描述：
+	数据格式：String jsonStr3 = "{\"busiCode\":null,\"opId\":null,\"phone\":null,\"returnCode\":\"0000\",\"returnMessage\":\"接口请求成功！\",\"bean\":{},\"beans\":[],\"object\":{\"resultData\":{\"totalPoint\":\"1819\",\"brand\":\"01\"},\"transIdo\":\"14999116911221303823\",\"oprTime\":\"20170713100811\",\"resultCode\":\"0000\",\"resultDesc\":\"接口请求成功！\"},\"list\":null}";
+	其中object字段中返回的内容不确定，每个接口返回的不一样。想使用Gson解析
+解决方案：解析时将object字段设置为Object类型。这样就不会受到object内容的限制，可以解析成功。
+		  后续需要使用该字段时可以使用gson.toJson(bean.getObject())来将其转化为json字符串，各个接口可以自己分别解析
+		  

@@ -1,0 +1,4 @@
+library£ºApplication
+
+http://blog.bugtags.com/2016/01/27/embrace-android-studio-maven-deploy/
+http://blog.csdn.net/mybrahma/article/details/54946244£¨²ÎÊý½²½â£©

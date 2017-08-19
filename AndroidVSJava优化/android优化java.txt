@@ -1,0 +1,6 @@
+关键字：android java代码优化
+http://hukai.me/android-training-course-in-chinese/performance/performance-tips.html
+http://blog.csdn.net/jason0539/article/details/9820103
+
+http://www.yopai.com/show-1-211212-1.html
+try catch

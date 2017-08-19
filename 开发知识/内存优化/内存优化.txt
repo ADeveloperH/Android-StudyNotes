@@ -1,0 +1,8 @@
+参考链接：
+https://itimetraveler.github.io/2017/02/13/【Android】内存泄漏分析心得/
+
+工具：
+https://github.com/square/leakcanary
+https://www.liaohuqiu.net/cn/posts/leak-canary-read-me/
+
+https://github.com/seiginonakama/BlockCanaryEx/blob/master/README_ZH.md

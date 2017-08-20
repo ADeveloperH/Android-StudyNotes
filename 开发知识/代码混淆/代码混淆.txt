@@ -43,7 +43,6 @@ ProGuard常用语法：
 	-keepattributes SourceFile,LineNumberTable：抛出异常时保留代码行号，在异常分析中可以方便定位
 	-keepattributes Signature：避免混淆泛型，这在JSON实体映射时非常重要，比如fastJson
 	-keepattributes *Annotation*：保护代码中的Annotation不被混淆，这在JSON实体映射时非常重要，比如fastJson
-
 SDK中目录：..\SDK\tools\proguard\proguard-android.txt默认的配置说明：
 	-keep public class com.google.vending.licensing.ILicensingService
 	-keep public class com.android.vending.licensing.ILicensingService
@@ -80,7 +79,8 @@ SDK中目录：..\SDK\tools\proguard\proguard-android.txt默认的配置说明：
 	表示对android.support包下的代码不警告，因为support包中有很多代码都是在高版本中使用的，
 	如果我们的项目指定的版本比较低在打包时就会给予警告。不过support包中所有的代码都在版本兼容性上做足了判断，
 	因此不用担心代码会出问题，所以直接忽略警告就可以了。 
-
+	不是每个第三方SDK都需要-dontwarn 指令，这取决于混淆时第三方SDK是否出现警告，需要的时候再加上。
+	
 	-keep class android.support.annotation.Keep
 	-keep @android.support.annotation.Keep class * {*;}
 	-keepclasseswithmembers class * {
@@ -133,8 +133,11 @@ SDK中目录：..\SDK\tools\proguard\proguard-android.txt默认的配置说明：
 	…	匹配任意长度的任意类型参数。比如void test(…)就能匹配任意void test(String a)或者是void test(int a, String b)这些方法。
 
 
-	
-	
+参考：
+http://blog.csdn.net/guolin_blog/article/details/50451259
+http://www.jianshu.com/p/7391f0c554be
+http://hanhailong.com/2015/12/28/Android进阶之ProGuard代码混淆/
+https://treesouth.github.io/2015/04/05/Android中ProGuard混淆配置和总结/
 	
 	
 	
@@ -142,9 +145,3 @@ SDK中目录：..\SDK\tools\proguard\proguard-android.txt默认的配置说明：
 1、为什么需要保留四大组件?
 	四大组件声明必须在manifest中注册,如果混淆后类名更改,而混淆后的类名没有在manifest注册,是不符合Android组件注册机制的.
 	外部程序可能使用组件的字符串类名,如果类名混淆,可能导致出现异常
-	
-2、为什么没有手动Keep四大组件也没有什么问题?
-	默认的Proguard配置已经默认了四大组件的keep。（查看SDK下默认是没有配置的）
-	在gradle中配置时使用了proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-	其中proguard-android.txt是默认的配置。在SDK中目录：E:\Users\SDK\tools\proguard\proguard-android.txt中已经配置基础的内容
-	

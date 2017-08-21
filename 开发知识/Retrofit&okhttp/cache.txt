@@ -5,3 +5,72 @@ DiskLruCache完全解析，硬盘缓存的最佳方案：http://blog.csdn.net/guolin_blog/artic
 
 
 项目中使用RSA加密后每次请求相同接口url不一样。会多次缓存
+
+LruCache VS DiskLruCache:http://www.jianshu.com/p/e5c3b522e8c5
+	LRU(Least Recently Used), 即近期最少使用算法.采用LRU算法的缓存有两种，LruCache用于内存缓存， 
+	DiskLruCache用于存储设备缓存, 它通过把对象写入文件系统从而实现缓存的效果.
+
+LinkedHashMap和HashMap的区别:
+	LruCache和DiskLruCache的底层实现都是使用LinkedHashMap。
+	HashMap和LinkedHashMap都是实现Map<K, V>接口，区别在于HashMap中的对象存放是没有特定规则的，而LinkedHashMap中的对象存放顺序有特定的实现.
+	public class LinkedHashMap<K, V> extends HashMap<K, V>
+	LinkedHashMap有两个常用的构造方法:
+	public LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder) {
+			super(initialCapacity, loadFactor);
+			init();
+			this.accessOrder = accessOrder;
+	}
+	public LinkedHashMap() {
+			init();
+			accessOrder = false;//默认值为false
+	}
+	成员变量accessOrder规定了对象的存放顺序， false为按插入顺序存放， true为按访问顺序存放.
+	设置为true的时候，如果对一个元素进行了操作(put、get)，就会把那个元素放到集合的最后，
+	设置为false的时候，无论怎么操作，集合元素的顺序都是按照插入的顺序来进行存储的。
+	DiskLruCache源码中将其设为true，这样使用频率高的就会在最后边，每次容量达到最大值的时候，
+	只需要移除这个集合的前面的元素直到集合的容量足够存储数据的时候就可以了。
+	参考：http://www.jianshu.com/p/b0d1cbc4f5b8
+	
+	
+	
+
+
+DiskLruCache源码：
+https://github.com/JakeWharton/DiskLruCache
+demo的使用提交到分支okhttp中。
+
+DiskLruCache方法简介：由于DiskLruCache是被final修饰的，因此不可以直接通过new获得它的实例，使用它的open方法获得它的一个实例
+	DiskLruCache open(File directory, int appVersion, int valueCount, long maxSize)	
+		打开一个缓存目录，如果没有则首先创建它，directory：指定数据缓存地址 appVersion：APP版本号，当版本号改变时，缓存数据会被清除 
+		valueCount：同一个key可以对应多少文件 maxSize：最大可以缓存的数据量
+	Editor edit(String key)	
+		通过key可以获得一个DiskLruCache.Editor，通过Editor可以得到一个输出流，进而缓存到本地存储上
+	void flush()	
+		强制缓冲文件保存到文件系统
+	Snapshot get(String key)
+		通过key值来获得一个Snapshot，如果Snapshot存在，则移动到LRU队列的头部来，通过Snapshot可以得到一个输入流InputStream
+	long size()	
+		缓存数据的大小，单位是byte
+	boolean remove(String key)	
+		根据key值来删除对应的数据，如果该数据正在被编辑，则不能删除
+	void delete()	
+		关闭缓存并且删除目录下所有的缓存数据，即使有的数据不是由DiskLruCache 缓存到本目录的
+	void close()	
+		关闭DiskLruCache，缓存数据会保留在外存中
+	boolean isClosed()	
+		判断DiskLruCache是否关闭，返回true表示已关闭
+	File getDirectory()	
+		缓存数据的目录
+
+		
+		
+缓存目录介绍：
+	缓存下来的图片，它的名字正是由图片的URL经过MD5加密得到的，下面的journal文件是用来记录的，来看里面的内容：第一行：libcore.io.DiskLruCache固定写死
+	第二行：DiskLruCache版本号
+	第三行：APP版本号，由open()方法的参数appVersion传入
+	第四行：同一个key可以对应多少文件，由open()方法的参数valueCount传入，一般为1
+	第五行：空格
+	第六行：以DIRTY开头，后面跟着的是图片的key值，表示准备缓存这张图片，当调用DiskLruCache的edit()时就会生成这行记录
+	第七行：以CLEAN开头,后面跟着的是图片的Key值和大小，当调用editor.commit()时会生成这条记录，
+			表示缓存成功；如果调用editor.abort()表示缓存失败，则会生成REMOVE开头的表示删除这条数据。
+

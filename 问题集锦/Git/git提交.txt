@@ -1,0 +1,5 @@
+本地回退代码导致本地版本低于远程仓库版本，push时报错
+Updates were rejected because the tip of your current branch is behind
+
+解决方案：（使用tortoisegit）
+push时选中options中的konw changes

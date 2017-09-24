@@ -1,0 +1,26 @@
+1、项目中的问题：
+	主进程数据有一层内存缓存：zz.dela.cmcc.traffic.common.util.SharedPreferencesUtil#sModularBeanList
+	通知栏（另一个进程）会使用这个数据：但是静态数据多进程是不共享的。
+	通知栏点击要跳转的时候会使用这个数据。
+	下边都是通过广播的方式来解决
+方案一：
+	通知栏点击的PendingIntent使用getBroadcast。在接收广播的地方重新获取SP文件重新遍历，SP文件已经做了多进程共享
+	  PendingIntent goTrafficAddOilIntent = PendingIntent.getBroadcast(this, 100,
+	//                    StartActivityByModulerUtil.getStartIntent(this, "流量补充", FlowSupplyActivity.class, null, false)
+						new Intent(ACTION_TO_FlowSupplyActivity)
+						, PendingIntent.FLAG_UPDATE_CURRENT);
+				remoteViews.setOnClickPendingIntent(R.id.iv_add_oil, goTrafficAddOilIntent);
+	缺点：功能可以实现，但是点击后通知栏不会自动收起。需要手动收起通知栏
+
+方案二：
+	通知栏点击的事件绑定还是使用原来的方式：
+	PendingIntent goTrafficAddOilIntent = PendingIntent.getActivity(this, 100,
+		new Intent(this, FlowSupplyActivity.class)
+				, PendingIntent.FLAG_UPDATE_CURRENT);
+		remoteViews.setOnClickPendingIntent(R.id.iv_add_oil, goTrafficAddOilIntent);
+	这种方式点击会自动收起通知栏
+	数据同步是每次刷新接口拿到最新数据处理后发送通知来重新设置点击事件的绑定。
+	缺点：这样每次刷新都需要重新绑定
+这里有个小的知识点：
+	intent.setAction(Intent.ACTION_MAIN);和intent.setClass(context, FlowSupplyActivity.class);
+	不能同时使用。我同时使用然后发送intent广播使用context.sendBroadcast(intent);发现Action的广播没有发送

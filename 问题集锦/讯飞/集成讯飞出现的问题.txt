@@ -1,0 +1,14 @@
+讯飞API文档：http://mscdoc.xfyun.cn/android/api/
+
+测试过程注意查看error日志：MscSpeechLog
+
+问题一：
+MscSpeechLog: SpeechRecognizer cancel failed, is not running
+http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=17568
+这个问题不会影响功能，只是一个log提示，可以忽略（查看mIat.cancel()源码可以知道）	
+
+问题二：
+E/MscSpeechLog: init failed, please call this method in your main process!
+http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=10860
+http://www.xfyun.cn/doccenter/awd
+这个是多进程导致的，初始化时讯飞会校验当前进程名称是否为主进程名称，如果不是主进程名称，就会导致mIat初始化时为null，导致空指针

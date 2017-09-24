@@ -1,0 +1,22 @@
+官方文档：https://developer.android.google.cn/studio/profile/am-methodtrace.html
+参考：http://blog.csdn.net/u011240877/article/details/54347396
+
+
+
+TraceView的使用：
+参考：http://blog.csdn.net/itfootball/article/details/48792435
+面板列名含义如下:
+名称				意义
+Name				方法的详细信息，包括包名和参数信息
+Incl Cpu Time		Cpu执行该方法该方法及其子方法所花费的时间
+Incl Cpu Time%		Cpu执行该方法该方法及其子方法所花费占Cpu总执行时间的百分比
+Excl Cpu Time		Cpu执行该方法所话费的时间
+Excl Cpu Time%		Cpu执行该方法所话费的时间占Cpu总时间的百分比
+Incl Real Time		该方法及其子方法执行所话费的实际时间，从执行该方法到结束一共花了多少时间
+Incl Real Time%		上述时间占总的运行时间的百分比
+Excl Real Time%		该方法自身的实际允许时间
+Excl Real Time		上述时间占总的允许时间的百分比
+Calls+Recur			调用次数+递归次数，只在方法中显示，在子展开后的父类和子类方法这一栏被下面的数据代替
+Calls/Total			调用次数和总次数的占比
+Cpu Time/Call		Cpu执行时间和调用次数的百分比，代表该函数消耗cpu的平均时间
+Real Time/Call		实际时间于调用次数的百分比，该表该函数平均执行时间

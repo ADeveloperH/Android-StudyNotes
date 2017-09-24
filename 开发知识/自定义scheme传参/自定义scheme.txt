@@ -1,0 +1,14 @@
+参考：
+https://jaq.alibaba.com/community/art/show?articleid=265
+
+实现的两种方案：
+http://www.jianshu.com/p/e06132ce2a97
+
+
+微信、QQ打开方案
+http://www.pdzhangyi.com/2016/09/04/%E8%B7%B3%E8%BD%AC%E4%B8%8E%E5%91%BC%E8%B5%B7-%E8%B7%A8%E8%B6%8A%E5%BE%AE%E4%BF%A1&QQ%E4%B8%8EApp%E4%B9%8B%E9%97%B4%E7%9A%84%E9%B8%BF%E6%B2%9F/
+
+总结：
+自定义的URI Sheme和Intent-based URI在微信中都无法打开APP进行传参，支持QQ和其他浏览器中打开APP传参。
+APPLINK支持直接打开app具体页面，国产手机部分机型不行。
+应用宝微下载支持APP Link，需要申请，但不支持传参，只支持打开APP具体页面。

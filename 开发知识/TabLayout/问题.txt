@@ -1,0 +1,22 @@
+问题一：
+当设置Mode模式为：TabLayout.MODE_SCROLLABLE（即scrollable时），有多个tab一屏幕无法显示完，
+直接滑动tablayout，点击屏幕外的任一个tab（即相隔多个tab点击时），会出现滑动抖动问题。类似下边描述效果：
+https://stackoverflow.com/questions/41891598/tablayout-remove-unnecessary-scrolling
+解决方案：
+tabLayout.setupWithViewPager(viewPager);
+// little hack to prevent unnecessary tab scrolling
+tabLayout.clearOnTabSelectedListeners();
+tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        viewPager.setCurrentItem(tab.getPosition(), false);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) { }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) { }
+});
+
+注意调用顺序不能改变，需要调用clearOnTabSelectedListeners清除设置的默认监听，具体看TabLayout源码。

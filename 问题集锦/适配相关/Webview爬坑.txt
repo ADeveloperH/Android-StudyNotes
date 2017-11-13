@@ -1,0 +1,196 @@
+参考文章：
+爬坑之路：http://www.jianshu.com/p/93daf9402ea5
+cookie:https://segmentfault.com/a/1190000004556040
+跨域cookie：http://www.ruanyifeng.com/blog/2016/04/cors.html
+
+
+问题一：跨域cookie读取
+什么是跨域，简单的说就是不同的域名，我们都知道在pc上我们用浏览器访问网址，不同的网址都会在本地存储一些cookie信息，这样就可以实现比如自动登录等功能，
+在pc上不同域名是不能相互读取其他域下的cookie信息的（非web专业开发人员，如果理解有误，欢迎指出）。
+但是在Android上在api 23之前，是可以跨域读取cookie的，比如A域写入一个userId的cookie，B域可以读取该值。但是在23时，系统将该值设置成了false，不再让跨域读取了。
+需要手动设置为true
+
+问题二：http/https混合加载
+在现阶段，很多网站都改成了https进行访问，https可以提升访问网站的安全性，防止信息被窃取，如果所有的网页都是https且网页内的链接也是都是https，
+那就没有混合加载的问题了。但是很多资源现阶段还没有改变成https访问，往往页面都嵌入了http的链接。这种混合网页如果不进行处理，直接加载是会出现错误的。
+
+
+问题三：h5中video无法自动播放，需要手动点击才能播放的
+参考链接：
+http://blog.csdn.net/xuehuayous/article/details/52474888
+http://www.cnblogs.com/laozhbook/archive/2014/02/10/androidwebviewvideo.html
+
+
+问题四：
+异常：java.lang.UnsatisfiedLinkError: dlopen failed: "/data/app/com.google.android.webview-2/lib/arm/libwebviewchromium.so" is 32-bit instead of 64-bit
+解决方案：项目中不要包含arm64-v8a。如使用：
+办法1：让用户在设置里面把Android System Webview卸载更新
+办法2：让你的应用做适配添加这个
+ndk {abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
+
+参考链接：http://bbs.mb.qq.com/thread-1117522-1-1.html
+
+
+
+
+/**
+     * 设置WebSetting
+     */
+    private void initWebSetting() {
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " VersionCode/" + InstallUtil
+                .getVersionCode(this));
+        webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAppCacheEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setSupportZoom(true);
+        webSettings.setGeolocationEnabled(true);
+        webSettings.setDatabaseEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+    }
+
+    /**
+     * 设置跨域cookie读取
+     */
+    public final void setAcceptThirdPartyCookies() {
+        //target 23 default false, so manual set true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+        }
+    }
+
+    /**
+     * 设置client
+     */
+    private void initWebClient() {
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                Log.e(TAG, "onProgressChanged newProgress=" + newProgress);
+            }
+
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, 
+                                             FileChooserParams fileChooserParams) {
+                uploadFileNew = filePathCallback；
+                Intent intent = fileChooserParams.createIntent();
+                try {
+                    startActivityForResult(intent, REQUEST_CODE_GET_LOCAL_FILE_NEW);
+                } catch (Exception e) {
+                    ToastUtil.showLong(getString(R.string.choose_fail));
+                    return false;
+                }
+                return true;
+            }
+
+            //
+            // FILE UPLOAD <3.0
+            //
+            public void openFileChooser(ValueCallback<Uri> uploadFile) {
+                chooseFile(uploadFile, null, null);
+            }
+
+            public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType) {
+                chooseFile(uploadFile, acceptType, null);
+            }
+
+            /**
+             * 4.x
+             * @param uploadFile
+             * @param acceptType
+             * @param capture
+             */
+            public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
+                chooseFile(uploadFile, acceptType, capture);
+            }
+        });
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                Log.e(TAG, "onPageStarted");
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.e(TAG, "onPageFinished");
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                Log.e(TAG, "onReceivedError");
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                super.onReceivedSslError(view, handler, error);
+                Log.e(TAG, "onReceivedSslError");
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.e(TAG, "shouldOverrideUrlLoading url=" + url);
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        });
+    }
+
+    private ValueCallback<Uri[]> uploadFileNew;
+    private ValueCallback<Uri> uploadFile;
+
+    /**
+     * 文件选择
+     *
+     * @param uploadFile
+     * @param acceptType
+     * @param capture
+     */
+    private void chooseFile(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        if (TextUtils.isEmpty(acceptType)) {
+            acceptType = "*/*";
+        }
+        intent.setType(acceptType);
+
+        this.uploadFile = uploadFile;
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, capture), REQUEST_CODE_GET_LOCAL_FILE);
+        } catch (Throwable tr) {
+            tr.printStackTrace();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_GET_LOCAL_FILE:
+                if (uploadFile != null) {
+                    uploadFile.onReceiveValue((resultCode == Activity.RESULT_OK && data != null) ? data.getData() : 
+                            null);
+                    uploadFile = null;
+                }
+                break;
+            case REQUEST_CODE_GET_LOCAL_FILE_NEW:
+                if (uploadFileNew != null) {
+                    uploadFileNew.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                    uploadFileNew = null;
+                }
+                break;
+        }
+    }
+}

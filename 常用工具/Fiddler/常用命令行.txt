@@ -1,0 +1,11 @@
+介绍：
+命令行输入区域：fiddler左下角黑色区域。命令输入区域输入help，回车执行会打开一页面详细介绍fiddler的所有命令
+全部的命令：http://docs.telerik.com/fiddler/knowledgebase/quickexec
+
+
+一、断点相关（break point）
+Alt+Q：快速进入命令行输入焦点
+如果忘记命令：命令行输入bp会有提示
+可以修改请求和响应的相关数据
+
+参考：http://chessman-126-com.iteye.com/blog/2001288

@@ -1,0 +1,53 @@
+参考：
+郭：
+http://blog.csdn.net/guolin_blog/article/details/11952435
+http://blog.csdn.net/guolin_blog/article/details/9797169
+
+详细讲解了生命周期及参数含义
+http://blog.csdn.net/javazejian/article/details/52709857
+
+
+1、Service运行在主线程中。不能做耗时操作，否则会导致ANR
+
+2、Service里开子线程和Activity直接开子线程区别：
+	因为Activity很难对Thread进行控制，当Activity被销毁之后，就没有任何其它的办法可以再重新获取到之前创建的子线程的实例。
+	而且在一个Activity中创建的子线程，另一个Activity无法对其进行操作。但是Service就不同了，所有的Activity都可以与Service进行关联，
+	然后可以很方便地操作其中的方法，即使Activity被销毁了，之后只要重新与Service建立关联，就又能够获取到原有的Service中Binder的实例。
+	因此，使用Service来处理后台任务，Activity就可以放心地finish，完全不需要担心无法对后台任务进行控制的情况。
+
+3、创建子线程方式；http://wiki.jikexueyuan.com/project/java-concurrent/creating-and-starting-java-threads.html
+	注意：必须调用的是start方法而不是run方法， 如果调用run方法相当于还在当前线程执行的run方法（相当于调用普通的方法），而不是在新开的线程的执行。
+	创建一个 Thread 的匿名子类：
+	new Thread(){
+				@Override
+				public void run() {
+					super.run();
+				}
+			}.start();
+				
+	实现 Runnable 接口：
+	new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    
+                }
+            }).start();
+			
+4、远程service（跨进程）为什么点击Start Service按钮程序就不会崩溃，而点击Bind Service按钮就会崩溃呢？
+	这是由于在Bind Service按钮的点击事件里面我们会让MainActivity和MyService建立关联，但是目前MyService已经是一个远程Service了
+	，Activity和Service运行在两个不同的进程当中，这时就不能再使用传统的建立关联的方式，程序也就崩溃了。这就要使用AIDL来进行跨进程通信了（IPC）。
+	
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+

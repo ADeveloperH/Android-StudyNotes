@@ -1,0 +1,6 @@
+内存优化方案：
+参考：https://stackoverflow.com/questions/8692328/causing-outofmemoryerror-in-frame-by-frame-animation-in-android
+http://www.10tiao.com/html/599/201709/2651436179/1.html
+http://hub.hacktons.cn/animation/index-zh
+https://www.zybuluo.com/avenwu/note/876161
+git代码：https://github.com/hacktons/animation

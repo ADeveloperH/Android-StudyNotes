@@ -1,0 +1,55 @@
+参考链接：http://www.liuling123.com/2017/02/transparent-status-bar.html
+
+Android 4.4版本提供了FLAG_TRANSLUCENT_STATUS，在Activity中加入此flag，可以设置状态栏透明
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    Window window = getWindow();
+    // Translucent status bar
+    window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+}
+
+问题：当软件盘弹出的时候（Activity已经设置了adjustResize）EditText输入框却被有顶上来
+解决方案：
+Activity中调用：
+AndroidBug5497Workaround.assistActivity(findViewById(android.R.id.content));
+
+public class AndroidBug5497Workaround {
+
+    public static void assistActivity(View content) {
+        new AndroidBug5497Workaround(content);
+    }
+
+    private View mChildOfContent;
+    private int usableHeightPrevious;
+    private ViewGroup.LayoutParams frameLayoutParams;
+
+    private AndroidBug5497Workaround(View content) {
+        if (content != null) {
+            mChildOfContent = content;
+            mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                public void onGlobalLayout() {
+                    possiblyResizeChildOfContent();
+                }
+            });
+            frameLayoutParams = mChildOfContent.getLayoutParams();
+        }
+    }
+
+    private void possiblyResizeChildOfContent() {
+        int usableHeightNow = computeUsableHeight();
+        if (usableHeightNow != usableHeightPrevious) {
+            //如果两次高度不一致
+            //将计算的可视高度设置成视图的高度
+            frameLayoutParams.height = usableHeightNow;
+            mChildOfContent.requestLayout();//请求重新布局
+            usableHeightPrevious = usableHeightNow;
+        }
+    }
+
+    private int computeUsableHeight() {
+        //计算视图可视高度
+        Rect r = new Rect();
+        mChildOfContent.getWindowVisibleDisplayFrame(r);
+        return (r.bottom);
+    }
+
+}

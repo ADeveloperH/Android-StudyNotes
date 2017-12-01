@@ -1,3 +1,7 @@
 参考链接：
 https://www.gitbook.com/book/hltj/kotlin-reference-chinese/details
 点击 Kotlin 中文站进入--->点击学习
+
+
+常用备忘：
+if null的缩写(?:)：files ?: "empty"

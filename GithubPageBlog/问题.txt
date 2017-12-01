@@ -1,0 +1,6 @@
+1、开启Jekyll环境bundle exec jekyll serve时报错：（baidu）
+Jekyll::Converters::Scss encountered an error while converting 'css/main.scss':                    Invalid GBK character "\xE2" on line 10
+https://segmentfault.com/a/1190000002932352
+
+2、markDown插入图片
+https://www.zhihu.com/question/21065229

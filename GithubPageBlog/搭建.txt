@@ -1,0 +1,31 @@
+开启Jekyll环境：
+进入目录：D:\ADeveloperHBlog\ADeveloperH.github.io。执行命令：
+bundle exec jekyll serve
+
+访问地址：
+http://127.0.0.1:4000/
+
+
+
+1、环境搭建
+参考：http://www.jianshu.com/p/88c9e72978b4
+http://alfred-sun.github.io/blog/2014/12/05/github-pages/
+2、编写工具推荐
+https://zhuanlan.zhihu.com/p/20129910
+
+3、MarkDownPad2实用教程
+
+http://www.jianshu.com/p/e9840793d8c2
+
+4、jekyll官方文档讲解
+
+http://jekyllcn.com/docs/pages/
+
+
+5、GitHub Pages 静态博客（分类、标签、分页等）
+http://alfred-sun.github.io/blog/2014/12/05/github-pages/
+
+6、markdown常用语法
+简明教程：http://blog.csdn.net/column/details/introtomarkdown.html
+http://www.jianshu.com/p/q81RER
+http://wowubuntu.com/markdown/

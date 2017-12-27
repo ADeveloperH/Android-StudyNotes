@@ -29,3 +29,6 @@ http://alfred-sun.github.io/blog/2014/12/05/github-pages/
 简明教程：http://blog.csdn.net/column/details/introtomarkdown.html
 http://www.jianshu.com/p/q81RER
 http://wowubuntu.com/markdown/
+
+7、Liquid语法
+https://liquid.bootcss.com/tags/iteration/

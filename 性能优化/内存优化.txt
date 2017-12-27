@@ -1,0 +1,14 @@
+Shallow Size、Retained Size、Heap Size和Allocated区别：
+http://blog.csdn.net/yincheng886337/article/details/50517375
+
+Java内存分配机制 垃圾回收 GC Root：
+http://blog.csdn.net/x_i_y_u_e/article/details/50897229
+
+JAVA垃圾回收机制
+http://www.wxtlife.com/2016/04/25/java-jvm-gc/
+
+
+
+.hprof文件转换（转换后可以使用MAT打开）：
+路径：E:\Users\SDK\platform-tools
+转换命令：hprof-conv a.hprof b.hprof

@@ -4,3 +4,12 @@ http://www.10tiao.com/html/599/201709/2651436179/1.html
 http://hub.hacktons.cn/animation/index-zh
 https://www.zybuluo.com/avenwu/note/876161
 git代码：https://github.com/hacktons/animation
+
+
+讲解：LruCache
+https://www.kancloud.cn/kancloud/android-tutorial/87245
+Android内存缓存LruCache源码解析
+https://www.jianshu.com/p/b6e9a7bdf8d3
+
+Android中BitmapFactory.Options详解
+http://blog.csdn.net/haozipi/article/details/47183543

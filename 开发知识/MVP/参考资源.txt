@@ -1,0 +1,15 @@
+ Android-architecture之MVC、MVP、MVVM、Data-Binding
+http://blog.csdn.net/s003603u/article/details/51393218
+
+ 
+ 
+ 基于Activity、Fragment的生命周期避免MVP模式内存泄露的问题
+http://blog.csdn.net/s003603u/article/details/56670819
+
+
+[Android]WeakReference在Android中的使用
+https://github.com/fred-ye/summary/issues/17
+
+
+Android Fragment 的使用，一些你不可不知的注意事项
+http://yifeng.studio/2016/12/15/android-fragment-attentions/

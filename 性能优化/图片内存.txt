@@ -1,0 +1,24 @@
+图片内存占用：
+Bitmap内存占用计算
+https://www.jianshu.com/p/e1d42bf88d40
+安卓开踩过的坑：你的 Bitmap 究竟占多大内存？
+https://dev.qq.com/topic/591d61f56793d26660901b4e
+
+
+
+BitmapFactory.decodeStream和BitmapFactory.decodeResource加载的区别：
+一般直接设置imageview图片是通过BitmapFactory.decodeResource加载的，会根据手机的实际dpi进行相对应的调整，设置Bitmap.Config也不会改变内存占用大小，占用较大的内存，
+使用BitmapFactory.decodeStream来获取bitmap设置图片则只根据图片的分辨率来计算内存占用，width*height*4byte
+Bitmap.Config ALPHA_8 　//代表8位Alpha位图 每个像素占用1byte内存
+Bitmap.Config ARGB_4444 　//代表16位ARGB位图 每个像素占用2byte内存
+Bitmap.Config ARGB_8888 　//代表32位ARGB位图 每个像素占用4byte内存
+Bitmap.Config RGB_565 　//代表8位RGB位图 每个像素占用2byte内存
+
+当使用像 imageView.setBackgroundResource，imageView.setImageResource,或者 BitmapFactory.decodeResource 这样的方法来设置一张大图片的时候，
+这些函数在完成decode后，最终都是通过java层的createBitmap来完成的，需要消耗更多内存。
+通过BitmapFactory.decodeStream方法，创建出一个bitmap，再将其设为ImageView的 source，decodeStream最大的秘密在于其直接调用JNI>>nativeDecodeAsset()来完成decode，‘
+无需再使用java层的createBitmap，从而节省了java层的空间。如果在读取时加上图片的Config参数，可以跟有效减少加载的内存，从而跟有效阻止抛out of Memory异常。
+另外，需要特别注意：decodeStream是直接读取图片资料的字节码了， 不会根据机器的各种分辨率来自动适应，使用了decodeStream之后，
+需要在hdpi和mdpi，ldpi中配置相应的图片资源，否则在不同分辨率机器上都是同样大小（像素点数量），显示出来的大小就不对了。
+
+

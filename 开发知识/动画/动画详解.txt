@@ -1,0 +1,16 @@
+Tween Animation（补间动画）可以对view实现一系列的转换，例如：移动、渐变、伸缩、旋转。
+Frame Animation（帧动画又叫Drawable Animation） 是一系列的图片按顺序显示。
+http://www.cnblogs.com/wondertwo/p/5295976.html
+
+属性动画详解（Android 3.0引入属性动画）：
+http://blog.csdn.net/guolin_blog/article/details/43536355
+
+插值器与估值器的使用：
+https://www.jianshu.com/p/2f19fe1e3ca1
+
+演示插值器的网站：
+https://inloop.github.io/interpolator/
+
+
+动画特点和区别：
+https://www.zhihu.com/question/19703349

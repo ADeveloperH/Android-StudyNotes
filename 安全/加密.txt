@@ -1,0 +1,2 @@
+Android安全开发之浅谈密钥硬编码:
+http://blog.csdn.net/alimobilesecurity/article/details/51425629

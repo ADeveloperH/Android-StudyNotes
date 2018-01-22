@@ -1,0 +1,30 @@
+Histogram
+可列出每一个类的实例数。支持正则表达式查找，也可以计算出该类所有对象的retained size
+
+Dominator Tree
+可以列出内存中存活的大对象列表，优点是有Percentage字段，可以看各种情况的百分比。
+它是对象之间dominator关系树。如果从GC Root到达Y的的所有path都经过X，那么我们称X dominates Y，
+或者X是Y的Dominator Dominator Tree由系统中复杂的对象图计算而来。从MAT的dominator tree中可以看到占用内存最大的对象以及每个对象的dominator。
+
+Top consumers
+多种维度（包括 类大小、类加载器、包名）展示占用内存比较多的对象的分布，从而定位内存资源主要耗费在哪些地方！
+
+Leak Suspects
+MAT插件会给出一份可疑的分析报告，非常方便，我们只需结合源代码稍加分析到底哪个Problem才是引发问题真正原因所在。
+
+
+
+
+
+
+Shallow Heap ：一个对象内存的消耗大小，不包含对其他对象的引用；
+Retained Heap ：是shallow Heap的总和，也就是该对象被GC之后所能回收的内存大小；
+
+在某一项上右键打开菜单选择 list objects ：
+with incoming references 将列出哪些类引入该类；
+with outgoing references 列出该类引用了哪些类
+
+Path to GC Roots
+查看一个对象到RC Roots的引用链，通常在排查内存泄漏的时候，我们会选择exclude all phantom/weak/soft etc.references,
+意思是查看排除虚引用/弱引用/软引用等的引用链，因为被虚引用/弱引用/软引用的对象可以直接被GC给回收，
+我们要看的就是某个对象否还存在Strong 引用链（在导出HeapDump之前要手动出发GC来保证），如果有，则说明存在内存泄漏，然后再去排查具体引用。

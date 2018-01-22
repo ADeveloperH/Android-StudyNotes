@@ -1,0 +1,23 @@
+
+
+
+
+问题一：刷新adapter数据,伪代码：
+ List<DelegateAdapter.Adapter> adapters = new LinkedList<>();
+VirtualLayoutManager layoutManager = new VirtualLayoutManager(mActivity);
+recyclerview.setLayoutManager(layoutManager);
+delegateAdapter = new DelegateAdapter(layoutManager, true);
+recyclerview.setAdapter(delegateAdapter);
+adapters.add(...);
+adapters.add(refreshAdapter);
+adapters.add(...);
+delegateAdapter.setAdapters(adapters);
+调用refreshAdapter.notifyDataSetChanged()时会包类型转换错误
+java.lang.ClassCastException: HomeGridAdapter$ViewHolder cannot be cast to HomeTopAdapter$ViewHolder
+
+解决方案：这个是由于viewType一直复用导致的
+方案1：不同adapter设置不同的viewType
+方案2：new DelegateAdapter(layoutManager, false);
+参考链接：https://github.com/alibaba/vlayout/issues/189
+https://github.com/alibaba/vlayout/blob/master/docs/VLayoutFAQ.md
+http://pingguohe.net/2017/05/03/the-beauty-of-math-in-vlayout.html

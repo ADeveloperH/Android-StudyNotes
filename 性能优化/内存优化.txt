@@ -12,3 +12,21 @@ http://www.wxtlife.com/2016/04/25/java-jvm-gc/
 .hprof文件转换（转换后可以使用MAT打开）：
 路径：E:\Users\SDK\platform-tools
 转换命令：hprof-conv a.hprof b.hprof
+
+理解Java垃圾回收机制
+http://jayfeng.com/2016/03/11/%E7%90%86%E8%A7%A3Java%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6/
+
+浅析JAVA的垃圾回收机制（GC）
+https://www.jianshu.com/p/5261a62e4d29
+
+
+知乎：
+https://www.zhihu.com/question/35164211
+
+
+Android性能优化面试看这一篇就够了
+https://www.jianshu.com/p/2a4ae664c38c
+
+
+
+

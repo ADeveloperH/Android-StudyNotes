@@ -1,4 +1,4 @@
-问题描述：
+1、问题描述：
 如何判断Activity上是否显示的有dialog：
 显示dialog时Activity不会回调onpause。不能用Activity正常的生命周期判断
 dialog可通过返回键和点击旁边空白处消失，如果使用标志位则无法在消失的时候重置标志位，因为无法知道dialog何时消失。
@@ -11,3 +11,7 @@ dialog可通过返回键和点击旁边空白处消失，如果使用标志位则无法在消失的时候重置标志
 方案二：
 使用Activity的onWindowFocusChanged生命周期来进行判断，可以直接调用hasWindowFocus()方法判断是否显示的有dialog，为true表示没有显示的dialog
 参考：https://stackoverflow.com/questions/11026234/how-to-check-if-the-current-activity-has-a-dialog-in-front
+
+
+2、如何控制弹框优先级：
+https://www.jianshu.com/p/10bd7db7d9ca

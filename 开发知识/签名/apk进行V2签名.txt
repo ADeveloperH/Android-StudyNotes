@@ -1,0 +1,24 @@
+新一代开源Android渠道包生成工具Walle：
+https://tech.meituan.com/android-apk-v2-signature-scheme.html
+
+360CERT：CVE–2017–13156 Janus安卓签名漏洞预警分析：
+https://www.anquanke.com/post/id/90372
+
+使用Python脚本实现360加固后一键V2签名和Walle打出渠道包：
+http://blog.csdn.net/finddreams/article/details/78773687
+
+
+APK 签名方案 v2（官方）：
+https://source.android.com/security/apksigning/v2
+https://developer.android.google.cn/about/versions/nougat/android-7.0.html?hl=zh-cn#apk_signature_v2
+
+
+Android的APK Signature Scheme v2签名及一款基于Java环境的校验工具介绍：
+http://blog.bihe0832.com/android-v2-signature.html
+
+校验V2签名官方工具：
+https://developer.android.com/studio/command-line/apksigner.html
+
+校验是否使用V2签名命令：
+cmd /k cd /d E:\Users\SDK\build-tools\24.0.3 
+apksigner verify --v E:\Users\SDK\build-tools\24.0.3\_4GManager_sign.apk

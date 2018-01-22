@@ -60,6 +60,14 @@ http://blog.csdn.net/kingoneyun/article/details/54581764
 
 
 
+问题七：安全漏洞：
+http://www.androidchina.net/6508.html
+http://www.androidchina.net/6510.html
+
+
+问题八：应用宝微下载链接可以打开APP指定页面传参方式（APPLink）：
+http://wiki.open.qq.com/index.php?title=mobile/%E5%BA%94%E7%94%A8%E5%AE%9D%E5%BE%AE%E4%B8%8B%E8%BD%BD
+
 
 
 

@@ -1,7 +1,4 @@
 
-
-
-
 问题一：刷新adapter数据,伪代码：
  List<DelegateAdapter.Adapter> adapters = new LinkedList<>();
 VirtualLayoutManager layoutManager = new VirtualLayoutManager(mActivity);

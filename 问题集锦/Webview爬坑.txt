@@ -1,3 +1,6 @@
+webview日志：chromium
+
+
 参考文章：
 webview开车指南：https://jiandanxinli.github.io/2016-08-31.html
 爬坑之路：http://www.jianshu.com/p/93daf9402ea5
@@ -6,67 +9,89 @@ cookie:https://segmentfault.com/a/1190000004556040
 
 
 问题一：跨域cookie读取
-什么是跨域，简单的说就是不同的域名，我们都知道在pc上我们用浏览器访问网址，不同的网址都会在本地存储一些cookie信息，这样就可以实现比如自动登录等功能，
-在pc上不同域名是不能相互读取其他域下的cookie信息的（非web专业开发人员，如果理解有误，欢迎指出）。
-但是在Android上在api 23之前，是可以跨域读取cookie的，比如A域写入一个userId的cookie，B域可以读取该值。但是在23时，系统将该值设置成了false，不再让跨域读取了。
-需要手动设置为true
-
-问题二：http/https混合加载
-在现阶段，很多网站都改成了https进行访问，https可以提升访问网站的安全性，防止信息被窃取，如果所有的网页都是https且网页内的链接也是都是https，
-那就没有混合加载的问题了。但是很多资源现阶段还没有改变成https访问，往往页面都嵌入了http的链接。这种混合网页如果不进行处理，直接加载是会出现错误的。
+	什么是跨域，简单的说就是不同的域名，我们都知道在pc上我们用浏览器访问网址，不同的网址都会在本地存储一些cookie信息，这样就可以实现比如自动登录等功能，
+	在pc上不同域名是不能相互读取其他域下的cookie信息的（非web专业开发人员，如果理解有误，欢迎指出）。
+	但是在Android上在api 23之前，是可以跨域读取cookie的，比如A域写入一个userId的cookie，B域可以读取该值。但是在23时，系统将该值设置成了false，不再让跨域读取了。
+	需要手动设置为true
+	
+	问题二：http/https混合加载
+	在现阶段，很多网站都改成了https进行访问，https可以提升访问网站的安全性，防止信息被窃取，如果所有的网页都是https且网页内的链接也是都是https，
+	那就没有混合加载的问题了。但是很多资源现阶段还没有改变成https访问，往往页面都嵌入了http的链接。这种混合网页如果不进行处理，直接加载是会出现错误的。
 
 
 问题三：h5中video无法自动播放，需要手动点击才能播放的
-参考链接：
-http://blog.csdn.net/xuehuayous/article/details/52474888
-http://www.cnblogs.com/laozhbook/archive/2014/02/10/androidwebviewvideo.html
+	参考链接：
+	http://blog.csdn.net/xuehuayous/article/details/52474888
+	http://www.cnblogs.com/laozhbook/archive/2014/02/10/androidwebviewvideo.html
 
 
 问题四：
-异常：java.lang.UnsatisfiedLinkError: dlopen failed: "/data/app/com.google.android.webview-2/lib/arm/libwebviewchromium.so" is 32-bit instead of 64-bit
-解决方案：项目中不要包含arm64-v8a。如使用：
-办法1：让用户在设置里面把Android System Webview卸载更新
-办法2：让你的应用做适配添加这个
-ndk {abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
-
-参考链接：http://bbs.mb.qq.com/thread-1117522-1-1.html
+	异常：java.lang.UnsatisfiedLinkError: dlopen failed: "/data/app/com.google.android.webview-2/lib/arm/libwebviewchromium.so" is 32-bit instead of 64-bit
+	解决方案：项目中不要包含arm64-v8a。如使用：
+	办法1：让用户在设置里面把Android System Webview卸载更新
+	办法2：让你的应用做适配添加这个
+	ndk {abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
+	
+	参考链接：http://bbs.mb.qq.com/thread-1117522-1-1.html
 
 
 问题五：
-在WebView里加载SSL网页很正常，也没什么难度。但如果要加载的SSL页面的证书有问题，比如过期、信息不正确、发行机关不被信任等，
-WebView就会拒绝加载该网页。PC上的浏览器会弹出证书错误的对话框，提示你是否要无视错误继续浏览。实际上在WebView里也可以这样做，以实现加载证书有问题的页面。
-只需重载WebViewClient的onReceivedSslError()函数并在其中执行handler.proceed()，即可忽略SSL证书错误，继续加载页面。千万不要调用super.onReceivedSslError()。
-这是因为WebViewClient的onReceivedSslError()函数中包含了一条handler.cancel()（见源码，其含义是停止加载，所以如果调用了super.onReceivedSslError()，
-其结果就是第一次访问时无法加载，第二次以后可以加载（不知道为什么），而且还可能发生libc的段错误：
-webview.setWebViewClient(new WebViewClient() {
-    @Override
-    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-         // 不要使用super，否则有些手机访问不了，因为包含了一条 handler.cancel()
-        // super.onReceivedSslError(view, handler, error);
-         // 接受所有网站的证书，忽略SSL错误，执行访问网页
-        handler.proceed();
-    }
-}
-
-参考链接：
-https://charlee.li/android-load-cert-err-ssl-in-webview.html
-http://blog.csdn.net/kingoneyun/article/details/54581764
+	在WebView里加载SSL网页很正常，也没什么难度。但如果要加载的SSL页面的证书有问题，比如过期、信息不正确、发行机关不被信任等，
+	WebView就会拒绝加载该网页。PC上的浏览器会弹出证书错误的对话框，提示你是否要无视错误继续浏览。实际上在WebView里也可以这样做，以实现加载证书有问题的页面。
+	只需重载WebViewClient的onReceivedSslError()函数并在其中执行handler.proceed()，即可忽略SSL证书错误，继续加载页面。千万不要调用super.onReceivedSslError()。
+	这是因为WebViewClient的onReceivedSslError()函数中包含了一条handler.cancel()（见源码，其含义是停止加载，所以如果调用了super.onReceivedSslError()，
+	其结果就是第一次访问时无法加载，第二次以后可以加载（不知道为什么），而且还可能发生libc的段错误：
+	webview.setWebViewClient(new WebViewClient() {
+		@Override
+		public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+			// 不要使用super，否则有些手机访问不了，因为包含了一条 handler.cancel()
+			// super.onReceivedSslError(view, handler, error);
+			// 接受所有网站的证书，忽略SSL错误，执行访问网页
+			handler.proceed();
+		}
+	}
+	
+	参考链接：
+	https://charlee.li/android-load-cert-err-ssl-in-webview.html
+	http://blog.csdn.net/kingoneyun/article/details/54581764
 
 
 问题六：
-如何监听404、500、断网、timeout的问题
-参考：	http://blog.csdn.net/lsyz0021/article/details/56677132
+	如何监听404、500、断网、timeout的问题
+	参考：	
+	http://blog.csdn.net/lsyz0021/article/details/56677132
 
 
 
 
 问题七：安全漏洞：
-http://www.androidchina.net/6508.html
-http://www.androidchina.net/6510.html
+	http://www.androidchina.net/6508.html
+	http://www.androidchina.net/6510.html
 
 
 问题八：应用宝微下载链接可以打开APP指定页面传参方式（APPLink）：
-http://wiki.open.qq.com/index.php?title=mobile/%E5%BA%94%E7%94%A8%E5%AE%9D%E5%BE%AE%E4%B8%8B%E8%BD%BD
+	http://wiki.open.qq.com/index.php?title=mobile/%E5%BA%94%E7%94%A8%E5%AE%9D%E5%BE%AE%E4%B8%8B%E8%BD%BD
+
+
+问题九：网页中包含腾讯视频全屏播放（点击全屏时未回调onShowCustomView等方法）
+	解决方案：
+	方案一：H5调原生的方法告知全屏状态切换（未实验，和下边原理一样，但需要H5添加对应方法）
+	
+	方案二：通过js注入，绑定对应的控件点击事件（收到事件以后客户端处理）
+	参考链接：
+	https://ansuote.github.io/2017/05/04/WebView%20%E8%85%BE%E8%AE%AF%E8%A7%86%E9%A2%91%E5%85%A8%E5%B1%8F%E6%92%AD%E6%94%BE/
+	http://blog.csdn.net/lx331675996/article/details/50634670
+	https://www.jianshu.com/p/4aed5c1230dc
+	https://segmentfault.com/a/1190000007561455
+	遇到问题：js注入通过document.getElementsByClassName寻找控件时无法找到，报如下错误
+	"Uncaught SecurityError: Failed to read the 'contentDocument' property from 'HTMLIFrameElement': 
+	Blocked a frame with origin "http://online.10086.cn" from accessing a frame with origin "https://v.qq.com". 
+	The frame requesting access has a protocol of "http", the frame being accessed has a protocol of "https". Protocols must match.
+	", source: http://online.10086.cn/bbs/mui/dist/js/newsBefore.min.js?v=201801181950 (3)
+	该错误是由于页面域名是http的，腾讯视频的域名是https的，且域名不同，页面通过iframe内嵌腾讯视频，由于有同源策略跨域访问，
+	父页面无法访问子页面的控件，导致无法找到控件进行js注入，注入失败。参考链接：
+	http://www.blogjava.net/linli/archive/2015/04/22/424584.html
+	https://www.jianshu.com/p/0f4ecf92504c
 
 
 

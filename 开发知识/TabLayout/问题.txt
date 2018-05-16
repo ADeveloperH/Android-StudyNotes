@@ -20,3 +20,6 @@ tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 });
 
 注意调用顺序不能改变，需要调用clearOnTabSelectedListeners清除设置的默认监听，具体看TabLayout源码。
+
+抖动解决方案：
+https://juejin.im/entry/5a2c9ec5f265da43322780dd
